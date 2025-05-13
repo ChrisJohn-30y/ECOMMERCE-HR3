@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>QR Scanner</title>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  <style>
+    video {
+      width: 100%;
+      border: 2px solid #333;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<h3>Scan QR Code</h3>
+<video id="preview"></video>
+<input type="text" id="employee" placeholder="Scanned code will appear here">
+
+<!-- ✅ Load Instascan BEFORE using it -->
+<script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+
+
+<script>
+  // Wait for the DOM to load
+  document.addEventListener("DOMContentLoaded", function () {
+    let scanner = new Instascan.Scanner({ video: document.getElementById('preview'), mirror: false });
+
+    scanner.addListener('scan', function (content) {
+      console.log("Scanned content:", content);
+      document.getElementById('employee').value = content;
+    });
+
+    Instascan.Camera.getCameras().then(function (cameras) {
+      if (cameras.length > 0) {
+        scanner.start(cameras[0]); // Start the first available camera
+      } else {
+        alert('No cameras found.');
+      }
+    }).catch(function (e) {
+      console.error('Error accessing camera:', e);
+      alert('Error accessing camera: ' + e);
+    });
+  });
+</script>
+
+</body>
+</html>
